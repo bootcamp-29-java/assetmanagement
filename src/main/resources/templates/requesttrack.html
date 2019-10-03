@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html>
+    <head>
+        <title>TODO supply a title</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" type="text/css" href="/css/style.css">
+        <!-- Fonts -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+        <link rel="stylesheet" href="http://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css">
+        <script src="http://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+        <script src="http://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
+        <script defer src="https://use.fontawesome.com/releases/v5.0.13/js/solid.js" integrity="sha384-tzzSw1/Vo+0N5UhStP3bvwWPq+uvzCMfrN1fEFe+xBmv1C/AtVX5K0uZtmcHitFZ" crossorigin="anonymous"></script>
+        <script defer src="https://use.fontawesome.com/releases/v5.0.13/js/fontawesome.js" integrity="sha384-6OIrr52G08NpOFSZdxxz1xdNSndlD4vdcf/q2myIUVO0VsqaGHJsB0RaBE01VTOY" crossorigin="anonymous"></script>
+        <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+        <link href="/css/style.css" rel="stylesheet"><link rel="stylesheet" href="/css/track.css" type="text/css"/>
+
+    </head>
+    <body>
+        <div class="flex-grow-1 flex-shrink-0">
+            <div class="wrapper toggled">
+                <!--Sidebar--> 
+                <nav id="sidebar">
+                        <div class="sidebar-header">
+                            <h3>Asset Management</h3>
+                        </div>
+                        <ul class="list-unstyled components">
+                            <li class="active">
+                                <a href="/">Home</a>
+                            </li>
+                            <li>
+                                <a href="#requestSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Request Menu</a>
+                                <ul class="collapse list-unstyled" id="requestSubmenu">
+                                    <li>
+                                        <a href="/createRequest">Create Request</a>
+                                    </li>
+                                    <li>
+                                        <a href="/yourrequest">Your Request</a>
+                                    </li>
+                                    <li>
+                                    <a href="/requesthistory">Request History</a>
+                                </li>
+                                    <li sec:authorize="hasAuthority('GA')">
+                                        <a href="/ga/needapprove">Need Your Approve</a>
+                                    </li>
+                                    <li sec:authorize="hasAuthority('MANAGER')">
+                                        <a href="/manager/needapprove">Need Your Approve</a>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li sec:authorize="hasAuthority('ADMIN')">
+                                <a href="#adminSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Admin Menu</a>
+                                <ul class="collapse list-unstyled" id="adminSubmenu">
+                                    <li>
+                                        <a href="/assetHome">Add Asset</a>
+                                    </li>
+                                    <li>
+                                        <a href="/approvalStatusHome">Add Approval Status</a>
+                                    </li>
+                                    <li>
+                                        <a href="/categoryHome">Add Category</a>
+                                    </li>
+                                    <li>
+                                        <a href="/requestTypeHome">Add Request Type</a>
+                                    </li>
+                                    <li>
+                                        <a href="/roomHome">Add Room</a>
+                                    </li>
+                                    <li>
+                                        <a href="/statusAssetHome">Add Status Asset</a>
+                                    </li>
+                                </ul>
+                            </li>                        
+                        </ul>
+                    </nav>
+
+                    <!--Page Content--> 
+                    <div id="content">
+                        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+                            <div class="container-fluid">
+                                <button type="button" id="sidebarCollapse" class="btn btn-info">
+                                    <i class="fas fa-bars"></i>
+                                </button>
+                                <button class="btn btn-dark d-inline-block d-lg-none ml-auto" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                                    <i class="fas fa-bars"></i>
+                                </button>
+                                <a class="btn btn-dark" type="button" href="/logout" id="navbarDropdown" role="button">Logout</a>
+                            </div>
+                        </nav>
+
+                    <div class="container">
+
+                        <!-- Vertical Timeline -->
+                        <section id="conference-timeline">
+                            <div class="timeline-start">Start</div>
+                            <div class="conference-center-line"></div>
+                            <div class="conference-timeline-content">
+                                <div class="timeline-article">
+                                    <div class="content-left-container">
+                                        <div class="content-left">
+                                            <p th:text="${request.note}"></p>
+                                        </div>
+                                        <span class="timeline-author" th:text="${request.requester.firstName}"></span>
+                                    <div class="meta-date">
+                                        <span class="date" th:text="${#dates.format(request.requestDate, 'dd')}"></span>
+                                        <span class="month" th:text="${#dates.format(request.requestDate, 'MM-yy')}"></span>
+                                    </div>
+                                </div>
+                                </div>
+                                <!-- // Article -->
+                            </div>
+                            <div class="conference-timeline-content" th:each="rs : ${requeststatus}">
+                                <!-- Article -->
+                                <div class="timeline-article">
+                                    <div class="content-right-container">
+                                        
+                                        <div class="content-right" th:style="${rs.status.id == '1' || rs.status.id == '4' ? 'background-color: #8de332' : 'background-color: #db3030'}" >
+                                            <p th:text="${rs.note}"></p>
+                                        </div>
+                                        <span class="timeline-author" th:text="'By '+${rs.approver.firstName}+' '+${rs.approver.lastName}"></span>
+                                    </div>
+                                    <div class="meta-date">
+                                        <span class="date" th:text="${#dates.format(rs.dateTime, 'dd')}"></span>
+                                        <span class="month" th:text="${#dates.format(rs.dateTime, 'MM-yy')}"></span>
+                                    </div>
+                                </div>
+                                <!-- // Article -->
+                            </div>
+                            <div class="timeline-end">End</div>
+                        </section>
+                        <!-- // Vertical Timeline -->
+                    </div>
+                </div>
+            </div> 
+        </div>
+    </body>
+</html>

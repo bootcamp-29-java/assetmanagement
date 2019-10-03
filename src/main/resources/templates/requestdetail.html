@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Request</title>
+
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+        <link rel="stylesheet" href="http://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css">
+        <script src="http://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+        <script src="http://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
+        <script defer src="https://use.fontawesome.com/releases/v5.0.13/js/solid.js" integrity="sha384-tzzSw1/Vo+0N5UhStP3bvwWPq+uvzCMfrN1fEFe+xBmv1C/AtVX5K0uZtmcHitFZ" crossorigin="anonymous"></script>
+        <script defer src="https://use.fontawesome.com/releases/v5.0.13/js/fontawesome.js" integrity="sha384-6OIrr52G08NpOFSZdxxz1xdNSndlD4vdcf/q2myIUVO0VsqaGHJsB0RaBE01VTOY" crossorigin="anonymous"></script>
+        <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+        <link href="/css/style.css" rel="stylesheet">
+        <script type="text/javascript" src="/js/jquery.datetimepicker.full.js"></script>
+        <link rel="stylesheet" type="text/css" href="/css/jquery.datetimepicker.min.css">
+        <link rel="stylesheet" href="../static/css/main.css" type="text/css"/>
+
+        <script type="text/javascript" src="/js/script.js"></script>
+
+    </head>
+
+    <body class="d-flex flex-column" th:attr="onload='sweetAlertInsert(\''+${status}+'\')'">
+        <div class="flex-grow-1 flex-shrink-0">
+            <div class="wrapper toggled">
+                <!--Sidebar--> 
+                <nav id="sidebar">
+                    <div class="sidebar-header">
+                        <h3>Asset Management</h3>
+                    </div>
+                    <ul class="list-unstyled components">
+                        <li class="active">
+                            <a href="/">Home</a>
+                        </li>
+                        <li>
+                            <a href="#requestSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Request Menu</a>
+                            <ul class="collapse list-unstyled" id="requestSubmenu">
+                                <li>
+                                    <a href="/createRequest">Create Request</a>
+                                </li>
+                                <li>
+                                    <a href="/yourrequest">Your Request</a>
+                                </li>
+                                <li>
+                                    <a href="/requesthistory">Request History</a>
+                                </li>
+                                <li sec:authorize="hasAuthority('GA')">
+                                    <a href="/ga/needapprove">Need Your Approve</a>
+                                </li>
+                                <li sec:authorize="hasAuthority('MANAGER')">
+                                    <a href="/manager/needapprove">Need Your Approve</a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li sec:authorize="hasAuthority('ADMIN')">
+                            <a href="#adminSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Admin Menu</a>
+                            <ul class="collapse list-unstyled" id="adminSubmenu">
+                                <li>
+                                    <a href="/assetHome">Add Asset</a>
+                                </li>
+                                <li>
+                                    <a href="/approvalStatusHome">Add Approval Status</a>
+                                </li>
+                                <li>
+                                    <a href="/categoryHome">Add Category</a>
+                                </li>
+                                <li>
+                                    <a href="/requestTypeHome">Add Request Type</a>
+                                </li>
+                                <li>
+                                    <a href="/roomHome">Add Room</a>
+                                </li>
+                                <li>
+                                    <a href="/statusAssetHome">Add Status Asset</a>
+                                </li>
+                            </ul>
+                        </li>                        
+                    </ul>
+                </nav>
+
+                <!--Page Content--> 
+                <div id="content">
+                    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+                        <div class="container-fluid">
+                            <button type="button" id="sidebarCollapse" class="btn btn-info">
+                                <i class="fas fa-bars"></i>
+                            </button>
+                            <button class="btn btn-dark d-inline-block d-lg-none ml-auto" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                                <i class="fas fa-bars"></i>
+                            </button>
+                            <a class="btn btn-dark" type="button" href="/logout" id="navbarDropdown" role="button">Logout</a>
+                        </div>
+                    </nav>
+                    <div class="container">
+                        <div class="card">
+                            <h5 class="card-header color" style="text-align: center">Request Detail</h5>
+                            <div class="card-body">
+                                <form action="#" th:action="@{/insertcart}" modelAttribute="request" method="POST" >
+                                    <div class="form-row">
+                                        <table class="table">
+                                            <tr>
+                                                <td>Id</td>
+                                                <td>:</td>
+                                                <td th:text="${request.id}"></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Requester</td>
+                                                <td>:</td>
+                                                <td th:text="${request.requester.firstName}+' '+${request.requester.lastName}"></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Request Date</td>
+                                                <td>:</td>
+                                                <td th:text="${request.requestDate}"></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Current Status</td>
+                                                <td>:</td>
+                                                <td th:text="${request.currentStatus.name}"></td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                        <br>
+                        <div class="card">
+                            <h5 class="card-header color" style="text-align: center">Request Items</h5>
+                            <div class="card-body">
+                                <table  id="assetmanagement" class="display" cellspacing="0" width="100%" >
+                                    <thead>
+                                        <tr>
+                                            <th width="5%">No</th>
+                                            <th>Item Id</th>
+                                            <th>Item name</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr th:each="count : ${items}">
+                                            <td></td>
+                                            <td th:text="${count.asset.id}"></td>
+                                            <td th:text="${count.asset.name}"></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+
+                        <!-- End Modal Report-->
+
+                    </div>
+                </div>
+            </div> 
+        </div>
+
+        <!-- Footer -->
+        <footer>
+            <div class="footer-bottom">
+                <div class="container">
+                    <p class="pull-left"> Copyright © 2004-2018. All rights reserved. </p>
+                    <div class="pull-right">
+                        <ul class="nav nav-pills payments">
+                            <li>We Accept:  </li>
+                            <li><i class="fa fa-cc-paypal"></i></li>
+                            <li><i class="fa fa-cc-mastercard"></i></li>
+                            <li><i class="fa fa-cc-amex"></i></li>
+                            <li><i class="fa fa-cc-visa"></i></li>                   
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </footer>
+        <!-- Footer -->
+
+    </body>
+
+</html>
